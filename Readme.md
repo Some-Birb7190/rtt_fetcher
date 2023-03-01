@@ -16,8 +16,9 @@ For this program you will need:
 2. Next, open a terminal and run "git clone https://git.birb.not.hpkns.uk/hbirb/rtt_fetcher && cd rtt_fetcher"
 3. Change the name of ".env.example" to ".env"
 4. Open the now ".env" file and in the "UNAME" and "PASSWORD" fields, enter your **API credentials**, not your account credentials. These are provided on the API dashboard
-5. Next, enter the CRS code for the default station you want to search for. (If you are unsure, look [here](http://www.railwaycodes.org.uk/crs/crs0.shtm))
-6. Follow usage steps  
+5. Next, enter the CRS code for the default station you want to search for into the "STATION" field. (If you are unsure, look [here](http://www.railwaycodes.org.uk/crs/crs0.shtm))  
+6. If you are on Linux, open a terminal in the folder of "./main.py" and run "chmod +x ./main.py" so you can execute it  
+7. Follow usage steps  
   
 ## Usage:  
 usage: ./main.py [-h] [-s BHM] [-a 5]  
@@ -29,3 +30,17 @@ optional arguments:
 &emsp;-s BHM, --station BHM&emsp;&emsp;Passing a station's CRS code through argument instead of in the .env file                    
 &emsp;-a 5, --amount 5&emsp;&emsp;&emsp;&emsp;&emsp;The amount of services to print out, default 5  
 ## Examples:  
+Output the help statement:  
+`./main.py -h`  
+  
+Output the next 5 (the default amount) for the default station in ".env":  
+`./main.py`  
+
+Output the next 10 trains at a different station:  
+`./main.py --amount 10 --station HHD`  
+  
+## Final notes:  
+Again a huge thanks to the team at Realtime Trains as this wouldn't be possible without them.  
+Yes this code is awful but I wanted to make it work and I think I did that pretty well.  
+  
+If you have any issues you would like to submit, please ensure that the problem relates to the code itself (EG malfunction or something failing) rather than a system specific one (EG it doesn't run on Windows whatever).
