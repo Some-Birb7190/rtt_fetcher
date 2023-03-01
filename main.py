@@ -136,10 +136,10 @@ args = parse_args()
 dotenv.load_dotenv(dotenv.find_dotenv())
 USERNAME = os.environ["UNAME"]
 PASSWORD = os.environ["PASSWORD"]
-STATION = os.environ["STATION"]
+STATION = os.environ["STATION"].upper()
 
 if args.station:
-    STATION = args.station
+    STATION = (args.station).upper()
 
 # Grab the list of times and try to parse it
 raw_data = get_times()

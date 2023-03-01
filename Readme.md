@@ -12,7 +12,7 @@ For this program you will need:
 - Not necessary but this was made on linux and that is what it is designed to run on. I won't be providing windows support if there are any issues
   
 ## Getting started:  
-1. First, you need an account with the Realtime Trains API, owned by [Tom Cairns](https://twitter.com/swlines). Head to https://apit.rtt.io/ and create an account
+1. First, you need an account with the Realtime Trains API, owned by [Tom Cairns](https://twitter.com/swlines). Head to https://api.rtt.io/ and create an account
 2. Next, open a terminal and run "git clone https://git.birb.not.hpkns.uk/hbirb/rtt_fetcher && cd rtt_fetcher"
 3. Change the name of ".env.example" to ".env"
 4. Open the now ".env" file and in the "UNAME" and "PASSWORD" fields, enter your **API credentials**, not your account credentials. These are provided on the API dashboard
