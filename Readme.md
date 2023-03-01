@@ -1,27 +1,31 @@
-<h1>Hello, this is a small project I am working by myself</h1>
-
-For anyone that wants to use this program, you must have these following libraries installed.<br />
-&emsp;- dotenv<br />
-&emsp;- argparse<br />
-&emsp;- requests<br />
-&emsp;- json<br />
-And any other that are mentioned in the `import` statements at the top of `main.py`. <br />
-<br />
-
-<h2>For authentication features:</h2>
-&emsp;1- You must create an API account over at https://api.rtt.io/.<br />
-&emsp;2- Navigate to the file `.env.example`<br />
-&emsp;3- Place your username and password **that the api gives you, not your account UN/PW!** <br />
-&emsp;4- Remove the `.example` on the end of the file, so it should just be `.env` <br />
-<br />
-
-<h2>Passing arguments:</h2>
-To view the arguments that this program can take, run `./main.py -h` and it will print it out. Alternatively it is printed here.<br />
-All of these arguments are optional and the program will run just fine without them:<br />
-&emsp;-h, --help&emsp;&emsp;Show the help message<br />
-&emsp;-f &emsp;&emsp;&emsp;&emsp;&emsp;Specify a file location to use (preferrably files with no spaces)<br />
-&emsp;-c &emsp;&emsp;&emsp;&emsp;&emsp;Force the program to use the file cache<br />
-&emsp;-d &emsp;&emsp;&emsp;&emsp;&emsp;Force the program to fetch a new dump<br />
-&emsp;-s &emsp;&emsp;&emsp;&emsp;&emsp;Passing a station code through arguments instead of typing it in<br />
-&emsp;-a &emsp;&emsp;&emsp;&emsp;&emsp;The amount of services to print out, rather than just parsing the entire dump/file<br />
-
+# A program to fetch and prettify train times from [Realtime trains](https://realtimetrains.com/)  
+This is a program that does what it says on the tin, using the [Realtime Trains API](https://api.rtt.io/) to collect and nicely display train times for a given station. Thanks to the devs at Realtime Trains for this public API, this would not be possible without it.  
+This is for another project which I'm working on whereby I have a little lcd on my desk and can use a raspberry PI to display train times. But that is out of the scope for this project.  
+As with anything I do, I couldn't find something that did what I wanted so I made it myself. My programming skills are passable but they get the job done.  
+## Pre-Requisites:  
+For this program you will need:  
+- An account over at [Realtime Trains](https://realtimetrains.com/) (more on that in a later section)  
+- Python 3 (made using Python 3.8.10)  
+- python-dotenv - https://github.com/theskumar/python-dotenv/
+- prettytable - https://github.com/jazzband/prettytable  
+- Git
+- Not necessary but this was made on linux and that is what it is designed to run on. I won't be providing windows support if there are any issues
+  
+## Getting started:  
+1. First, you need an account with the Realtime Trains API, owned by [Tom Cairns](https://twitter.com/swlines). Head to https://apit.rtt.io/ and create an account
+2. Next, open a terminal and run "git clone https://git.birb.not.hpkns.uk/hbirb/rtt_fetcher && cd rtt_fetcher"
+3. Change the name of ".env.example" to ".env"
+4. Open the now ".env" file and in the "UNAME" and "PASSWORD" fields, enter your **API credentials**, not your account credentials. These are provided on the API dashboard
+5. Next, enter the CRS code for the default station you want to search for. (If you are unsure, look [here](http://www.railwaycodes.org.uk/crs/crs0.shtm))
+6. Follow usage steps  
+  
+## Usage:  
+usage: ./main.py [-h] [-s BHM] [-a 5]  
+  
+Fetch train time information from "realtimetrains.com"  
+  
+optional arguments:  
+&emsp;-h, --help&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;show this help message and exit  
+&emsp;-s BHM, --station BHM&emsp;&emsp;Passing a station's CRS code through argument instead of in the .env file                    
+&emsp;-a 5, --amount 5&emsp;&emsp;&emsp;&emsp;&emsp;The amount of services to print out, default 5  
+## Examples:  
