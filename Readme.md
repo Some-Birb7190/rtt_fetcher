@@ -39,6 +39,7 @@ Output the next 5 (the default amount) for the default station in ".env":
 Output the next 10 trains at a different station:  
 `./main.py --amount 10 --station HHD`  
   
+To see it in action, check this [asciinema recording](https://asciinema.org/a/563950)
 ## Final notes:  
 Again a huge thanks to the team at Realtime Trains as this wouldn't be possible without them.  
 Yes this code is awful but I wanted to make it work and I think I did that pretty well.  
