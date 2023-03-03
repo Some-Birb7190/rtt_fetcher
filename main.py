@@ -35,8 +35,8 @@ def construct_trains(data):
         
     trains = [] # The array that will hold all of the train objects
     for i in range(0,count):
-        if data['services'][i]['serviceType'] == "bus":
-            print("One or some of these services are buses. The amount displayed may not be the actual amount requested")
+        if data['services'][i]['serviceType'] != "train":
+            print("One or some of these services are not trains, the amount displayed may not be the actual amount requested")
             continue
 
         if data['services'][i]['trainIdentity']:
@@ -65,7 +65,7 @@ def construct_trains(data):
         # We also need it's real time
         # First check if there is even a real time associated with the train, if not then the time is the same as booked time, we want the departure if it is origin, so check that first
         if data['services'][i]['locationDetail']['displayAs'] == "ORIGIN": # So it originates from this station
-            if data['services'][i]['locationDetail']['realtimeDeparture']: # 
+            if data['services'][i]['locationDetail']['realtimeDeparture']: # Does it have a departure
                 real_time = data['services'][i]['locationDetail']['realtimeDeparture']
             else:
                 real_time = booked_time
