@@ -12,7 +12,7 @@ import argparse
 from prettytable import PrettyTable
 
 class Train: # Just to make the creation of trains a little neater
-    def __init__(self, Headcode:str, Departure_station:str, Arrival_station:str, Booked_time:str, Real_time:str, OnTime:bool, Toc:str) -> None:
+    def __init__(self, Headcode:str, Departure_station:str, Arrival_station:str, Booked_time:str, Real_time:str, OnTime:bool, Toc:str, Cancelled:bool=False) -> None:
         self.headcode = Headcode
         self.origStation = Departure_station
         self.terminus = Arrival_station
@@ -20,6 +20,7 @@ class Train: # Just to make the creation of trains a little neater
         self.real_time = Real_time
         self.onTime = OnTime
         self.toc = Toc
+        self.cancelled = Cancelled
 
 
 def construct_trains(data):
@@ -32,43 +33,53 @@ def construct_trains(data):
             count = len(data['services'])
         else:
             count = args.amount
-        
+    
     trains = [] # The array that will hold all of the train objects
     for i in range(0,count):
+        cancelled = False # This needs to be reset each iteration
+
         if data['services'][i]['serviceType'] != "train":
-            print("One or some of these services are not trains, the amount displayed may not be the actual amount requested")
             continue
 
-        if data['services'][i]['trainIdentity']:
-            id = data['services'][i]['trainIdentity']
-        else:
-            id = None
+        if data['services'][i]['locationDetail']['displayAs'] == "CANCELLED_CALL":
+            cancelled = True
 
-        if data['services'][i]['locationDetail']['origin']:
-            origin = data['services'][i]['locationDetail']['origin'][0]['description']
-        else:
-            origin = None
+        # if data['services'][i]['trainIdentity']: # I think every train without being detailed has a train ID
+        id = data['services'][i]['trainIdentity']
 
-        if data['services'][i]['locationDetail']['destination']:
-            destination = data['services'][i]['locationDetail']['destination'][0]['description']
-        else:
-            destination = None
+        origin = data['services'][i]['locationDetail']['origin'][0]['description']
+
+        destination = data['services'][i]['locationDetail']['destination'][0]['description']
         
-        #Now we get onto doing times 
-        #If it begins at the station, then it's time should be when it departs, if it is stopping then it's time is when it arrives
+        # Now we get onto doing times 
+        # If it begins at the station, then it's time should be when it departs, if it is calling then it's time is when it arrives, 
+        # It isn't usually formatted that way but that is how I would like to do that, this is for larger stations, so you know when the train arrives and you can be there for it
+        # If it is cancelled, check to see if there is an arrival time to see if it is meant to be a calling stop, if there isn't one then booked time is it's departure
         if data['services'][i]['locationDetail']['displayAs'] == "ORIGIN": 
             booked_time = data['services'][i]['locationDetail']['gbttBookedDeparture']
 
-        else:
+        elif data['services'][i]['locationDetail']['displayAs'] == "CALL":
             booked_time = data['services'][i]['locationDetail']['gbttBookedArrival']
         
-        # We also need it's real time
+        elif cancelled:
+            if 'gbttBookedArrival' in data['services'][i]['locationDetail']:
+                booked_time = data['services'][i]['locationDetail']['gbttBookedArrival']
+            else:
+                booked_time = data['services'][i]['locationDetail']['gbttBookedDeparture']
+        else:
+            booked_time = None
+
+        # We also need it's real time, unless it is cancelled
         # First check if there is even a real time associated with the train, if not then the time is the same as booked time, we want the departure if it is origin, so check that first
-        if data['services'][i]['locationDetail']['displayAs'] == "ORIGIN": # So it originates from this station
+        if cancelled:
+            real_time = "N/A"
+
+        elif data['services'][i]['locationDetail']['displayAs'] == "ORIGIN": # So it originates from this station
             if data['services'][i]['locationDetail']['realtimeDeparture']: # Does it have a departure
                 real_time = data['services'][i]['locationDetail']['realtimeDeparture']
             else:
                 real_time = booked_time
+        
         else: # No it passes through, so do the same but with arrival
             if data['services'][i]['locationDetail']['realtimeArrival']:
                 real_time = data['services'][i]['locationDetail']['realtimeArrival']
@@ -76,7 +87,7 @@ def construct_trains(data):
                 real_time = booked_time
         
         # So we have the real and booked time, check if it is on time
-        if (real_time <= booked_time):
+        if (real_time <= booked_time) and cancelled == False:
             on_time = True
         else:
             on_time = False
@@ -84,7 +95,7 @@ def construct_trains(data):
         # Grab the toc
         toc = data['services'][i]['atocName']
 
-        train = Train(id, origin, destination, booked_time, real_time, on_time, toc)
+        train = Train(id, origin, destination, booked_time, real_time, on_time, toc, cancelled)
 
         trains.append(train)
 
@@ -115,11 +126,10 @@ def get_times() -> dict:
 
         except(json.JSONDecodeError):
             print("Failed to decode JSON body")
-        
 
 def parse_args(): # A function to read arguments, this will get expanded upon
     parser = argparse.ArgumentParser(prog="./main.py", description='Fetch train time information from "realtimetrains.com"')
-    # parser.add_argument('-f', metavar='./rtt.json', help='Specify a file location to use (preferrably files with no spaces).')
+    parser.add_argument('-k', '--keep', help='Dump the raw response into a file', action="store_true")
     # parser.add_argument('-c', help='Force program to use cache', action="store_true")
     # parser.add_argument('-d', help='Force program to fetch new dump', action="store_true")
     #parser.add_argument('-r', help='When program reaches the end, allow the program to refresh every five minutes with new information.', action="store_true")
@@ -143,18 +153,36 @@ if args.station:
 
 # Grab the list of times and try to parse it
 raw_data = get_times()
+
+if args.keep:
+    try:
+        f = open("./rtt.json","w")
+        f.write(raw_data)
+        f.close()
+    except:
+        print("Failed to write file, skipping file writing")
+
 trains = construct_trains(raw_data) # Gets all of the trains needed
 
 # Time for the table
 table = PrettyTable()
-table.field_names = ["Headcode", "TOC", "From", "Going to", "Booked time", "Real time"]
+table.field_names = ["Headcode", "TOC", "From", "Going to", "Booked time", "Running time"]
 
 for train in trains:
-    if train.onTime == False:
+    if (train.onTime == False) and train.cancelled == False:
         t = ("Exp: " + train.real_time)
+    
+    elif train.cancelled == True:
+        t = "Cancelled"
+
     else:
         t = "On time"
-    table.add_row([train.headcode, train.toc, train.origStation, train.terminus, train.booked_time, t, ])
 
+    table.add_row([train.headcode, train.toc, train.origStation, train.terminus, train.booked_time, t])
+
+os.system("clear") # Clear the console before showing contents
 print("Trains at " + raw_data['services'][0]['locationDetail']['description'])
 print(table)
+
+if len(table.rows) > args.amount:
+    print("One or more of the requested services are not trains and have been removed. The amount shown may not be the amount requested.")
