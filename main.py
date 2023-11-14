@@ -7,7 +7,6 @@ import sys
 import requests
 import dotenv
 import json
-import time
 import argparse
 from prettytable import PrettyTable
 
@@ -119,7 +118,6 @@ def get_times() -> dict:
         print("Authentication required/incorrect.")
 
     elif (int(request.status_code/100)) == 2: # Check if the response code begins with 2
-
         try:
             t = json.loads(request.text)
             return(t)
@@ -166,11 +164,11 @@ trains = construct_trains(raw_data) # Gets all of the trains needed
 
 # Time for the table
 table = PrettyTable()
-table.field_names = ["Headcode", "TOC", "From", "Going to", "Booked time", "Running time"]
+table.field_names = ["Headcode", "TOC", "From", "Going to", "Booked time", "Expected"]
 
 for train in trains:
     if (train.onTime == False) and train.cancelled == False:
-        t = ("Exp: " + train.real_time)
+        t = (train.real_time)
     
     elif train.cancelled == True:
         t = "Cancelled"
