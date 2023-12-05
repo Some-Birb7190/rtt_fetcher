@@ -101,7 +101,7 @@ def construct_trains(data):
     return(trains)
 
 
-def get_times() -> dict:
+def get_times():
     URL = "https://api.rtt.io/api/v1/json/search/" + STATION # This location will not get arrivals, so terminating trains will not show up, however starting ones will
     
     request = requests.get(URL, auth=(USERNAME,PASSWORD))
@@ -118,12 +118,8 @@ def get_times() -> dict:
         print("Authentication required/incorrect.")
 
     elif (int(request.status_code/100)) == 2: # Check if the response code begins with 2
-        try:
-            t = json.loads(request.text)
-            return(t)
 
-        except(json.JSONDecodeError):
-            print("Failed to decode JSON body")
+        return(request.text)
 
 def parse_args(): # A function to read arguments, this will get expanded upon
     parser = argparse.ArgumentParser(prog="./main.py", description='Fetch train time information from "realtimetrains.com"')
@@ -159,8 +155,14 @@ if args.keep:
         f.close()
     except:
         print("Failed to write file, skipping file writing")
+try:
+    json_data = json.loads(raw_data)
 
-trains = construct_trains(raw_data) # Gets all of the trains needed
+except:
+    raise(json.JSONDecodeError)
+
+
+trains = construct_trains(json_data) # Gets all of the trains needed
 
 # Time for the table
 table = PrettyTable()
@@ -179,7 +181,7 @@ for train in trains:
     table.add_row([train.headcode, train.toc, train.origStation, train.terminus, train.booked_time, t])
 
 os.system("clear") # Clear the console before showing contents
-print("Trains at " + raw_data['services'][0]['locationDetail']['description'])
+print("Trains at " + json_data['services'][0]['locationDetail']['description'])
 print(table)
 
 if len(table.rows) > args.amount:
