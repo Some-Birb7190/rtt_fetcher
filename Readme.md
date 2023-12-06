@@ -21,14 +21,23 @@ For this program you will need:
 7. Follow usage steps  
   
 ## Usage:  
-usage: ./main.py [-h] [-s BHM] [-a 5]  
+usage: ./main.py [-h] [-k] [-s BHM] [-a 5]  
   
 Fetch train time information from "realtimetrains.com"  
   
-optional arguments:  
+<!-- options:  
 &emsp;-h, --help&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;show this help message and exit  
+&emsp;-k, --keep &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;Dump the raw JSON into a file (rtt.json)   
 &emsp;-s BHM, --station BHM&emsp;&emsp;Passing a station's CRS code through argument instead of in the .env file                    
 &emsp;-a 5, --amount 5&emsp;&emsp;&emsp;&emsp;&emsp;The amount of services to print out, default 5  
+-->
+
+| Option                | Action                                                                   |
+|-----------------------|--------------------------------------------------------------------------|
+| -h, --help            | show this help message and exit                                          |
+| -k, --keep            | Dump the raw response into a JSON file (rtt.json)                        |
+| -s BHM, --station BHM | Pass a station's CRS code through this argument instead of the .env file |
+| -a 5, --amount 5      | The amount of services to print out, default 5                           |  
 ## Examples:  
 Output the help statement:  
 `./main.py -h`  
