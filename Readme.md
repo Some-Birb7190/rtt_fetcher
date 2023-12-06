@@ -13,7 +13,7 @@ For this program you will need:
   
 ## Getting started:  
 1. First, you need an account with the Realtime Trains API, owned by [Tom Cairns](https://twitter.com/swlines). Head to https://api.rtt.io/ and create an account
-2. Next, open a terminal and run "git clone https://git.birb.not.hpkns.uk/hbirb/rtt_fetcher && cd rtt_fetcher"
+2. Next, open a terminal and run `git clone https://github.com/some-birb7190/rtt_fetcher.git && cd rtt_fetcher`
 3. Change the name of ".env.example" to ".env"
 4. Open the now ".env" file and in the "UNAME" and "PASSWORD" fields, enter your **API credentials**, not your account credentials. These are provided on the API dashboard
 5. Next, enter the CRS code for the default station you want to search for into the "STATION" field. (If you are unsure, look [here](http://www.railwaycodes.org.uk/crs/crs0.shtm))  
@@ -38,17 +38,16 @@ Fetch train time information from "realtimetrains.com"
 | -k, --keep            | Dump the raw response into a JSON file (rtt.json)                        |
 | -s BHM, --station BHM | Pass a station's CRS code through this argument instead of the .env file |
 | -a 5, --amount 5      | The amount of services to print out, default 5                           |  
+  
 ## Examples:  
-Output the help statement:  
-`./main.py -h`  
-  
-Output the next 5 (the default amount) for the default station in ".env":  
-`./main.py`  
+Output the help statement(`./main.py -h`):  
+![Output the help statement gif](readme-content/help_example.gif)  
+    
+Output the next 5 (the default amount) for the default station in ".env" (`./main.py`):  
+![Output default parameter](readme-content/example_output.gif)  
 
-Output the next 10 trains at a different station:  
-`./main.py --amount 10 --station HHD`  
-  
-To see it in action, check this [asciinema recording](https://asciinema.org/a/563950)
+Output the next 10 trains at a different station (`./main.py --amount 10 --station HHD`):  
+![Custom output with arguments](readme-content/argument_example.gif)  
 ## Final notes:  
 Again a huge thanks to the team at Realtime Trains as this wouldn't be possible without them.  
 Yes this code is awful but I wanted to make it work and I think I did that pretty well.  

@@ -34,6 +34,7 @@ def construct_trains(data):
             count = args.amount
     
     trains = [] # The array that will hold all of the train objects
+
     for i in range(0,count):
         cancelled = False # This needs to be reset each iteration
 
@@ -180,7 +181,7 @@ for train in trains:
 
     table.add_row([train.headcode, train.toc, train.origStation, train.terminus, train.booked_time, t])
 
-os.system("clear") # Clear the console before showing contents
+# os.system("clear") # Clear the console before showing contents
 print("Trains at " + json_data['services'][0]['locationDetail']['description'])
 print(table)
 
