@@ -21,7 +21,7 @@ For this program you will need:
 7. Follow usage steps  
   
 ## Usage:  
-usage: ./main.py [-h] [-k] [-s BHM] [-a 5]  
+usage: `./main.py [-h] [-k] [-s BHM] [-a 5]`  
   
 Fetch train time information from "realtimetrains.com"  
   
